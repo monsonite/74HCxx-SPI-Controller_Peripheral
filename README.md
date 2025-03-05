@@ -27,5 +27,7 @@ U11, a 74HC00 provides gating of the serial clock and correcting of its polarity
 
 For the purpose of testing, the serial data output MOSI from U6 is connected directly to the serial data input MISO of U7.
 
+The unused halves of U8 and U9 are used to form an ALU and Carry flipflop for the bit-serial CPU. These signals have been omitted for clarity.
+
 
 
