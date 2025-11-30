@@ -1,0 +1,35 @@
+RV32-WUJI
+
+This Chinese development from the Fudan University and Shaoxin Laboratory, slipped under the RADAR, back in April this year.
+
+There appears to be two separate developments, firstly, a new semiconductor process based on molybdenum di-sulphide (MoS2) substrate, and FETs, just three atomic layers thick.
+
+Secondly, the team managed to prove their design by implementing a 5931 transistor RISC V CPU.
+
+The first point is interesting, in that researchers are looking for new semiconductors and processes that go beyond silicon.
+
+The second point is not so great. They have created a 32-bit, bit serial CPU in slightly less than 6000 transistors.
+
+
+SPI controller and peripherals based on 74HCxx Logic.
+
+Interfacing to SPI peripheral and memory devices is easy if you have a microcontroller.
+
+With just a few lines of code either with an SPI peripheral or by GPIO bit-banging, SPI is easily implemented.
+
+But what if you wish to return to first principles and use discrete 74HCxx logic devices?
+
+The SPI bus is a bidirectional serial bus, that normally tranfers data in bytes.
+
+It relies on 4 signals, plus power and ground:
+
+/CE  Chip Enable -  active low,  enables the peripheral device
+MOSI  Data transmitted for controller to peripheral
+MISO  Data received from peripheral by controller
+SCLK  A data clock which simultaneously clocks data out of the controller and receives data from the peripheral.
+
+These signals must be co-ordinated using a state machine.
+
+The controller and peripheral can simultaneously transfer data between a pair of shift registers, such as the 74HC595 or parallel tristate, bus-friendly 74HC299.
+
+For the state machine, we can use a decade counter-decoder, such as the 74HC4017. This will give us 10 decoded timing pulses, which we can use to create the state machine control signals.
