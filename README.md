@@ -7,6 +7,35 @@ SPI controller and peripherals based on 74HCxx Logic
 
 Interfacing to SPI peripheral and memory devices is easy if you have a microcontroller, a few lines of code either with an SPI peripheral or by GPIO bit-banging, but what if you wish to return to first principles and make use of discrete 74HCxx logic devices?
 
+A typical SPI exchange consists of a synchronous transfer of serial data from the controller to the peripheral and a simultaneous return transfer from the peripheral back to the contoller. This is often, but not limited, to 8-bit packets.
+
+The bidirectional transfer is performed using a pair of shift registers, and parallel to serial conversion is often done at the same time. The output shift register on the master, can be a 74xx165 parallel in, serial out (PISO) register. The input register on the peripheral can be a 74xx595, a latching serial in, parallel out register. If a true full duplex, bidirectional exchange of data is required, then either an input and output register will be needed at both ends, or a single bidirectional register, like the tristate bus 74xx299 can be used.
+
+SPI is often used for sensors, GPIO expanders and serial memory devices. It is characterised by only requiring 4 signals:
+
+/CE An active low chip enable signal, to select the peripheral device. Multiple peripherals will each need their own enable signal /CE0,  /CE1, /CE2 etc.
+
+MOSI -  the serial output from the controller to the input of the peripheral
+
+MISO - the serial input from the peripheral to the controller
+
+SCLK - the synchronous serial clock to accompany the serial data.
+
+The transfer begins by the /CE signal being asserted low. This enables the peripheral, taking it out of low power mode, and puts it into data transfer mode. The output register is enabled for data transfer onto the MISO pin.
+
+Following on from the assertion of /CE, a series of gated clock pulses will be sent on SCLK and accompanying data on the MISO line.
+
+The idle state of the SCLK may be chosen to be high or low, this is known as CPOL (clock polarity). If CPOL=0 the idle state of the clock is low. If CPOL=1 the idle state of the clock is high.
+
+CPHA (clock phase) refers to the clock edge on which data is clocked into the register. If CPHA is 0, the data is transmitted on the rising edge of the clock. Data is transmitted on the falling edge when CPHA is 1.
+
+These combinations of CPOL and CPHA give 4 possible operating modes, and sime peripherals support more than one mode.
+
+In this example Mode 0 will be used. CPOL = 0 (low idle state) and CPHA = 0 (clock data on rising edge).
+
+
+
+
 In SPI Controller 02 - above, a PROM U3 is used to store the data sequence to be sent to the SPI peripheral device. Because this sequencer has been derived from an earlier bit-serial processor, it draws heavily on that design for its operaion.
 
 The main elements are:
