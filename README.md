@@ -37,8 +37,21 @@ In this example Mode 0 will be used. CPOL = 0 (low idle state) and CPHA = 0 (clo
 
 In addition to the shift registers, a simple sequencer, or state machine, based on a counter is used to generate the control signals /CS and SCLK.
 
+<img width="1502" height="830" alt="image" src="https://github.com/user-attachments/assets/3d2ea0f2-5ca7-405b-8ee3-d805baa22c8c" />
 
+In SPI Controller 1 - above, a 74HC4017 decoded, decade counter, U1 provides a series of timing pulses, T0, T1 and T9. 
 
+T0 is used to load the PISO shift register U2 with the parallel data from the User Switches. This could be any source of parallel data - such as a ROM or a RAM.
+
+T1 is used to assert the /CS chip select pulse, using the SR latch, U4.
+
+T9 is used to de-assert the /CS signal.
+
+The GATE output of the SR latch is used to gate a burst of 8 clock pulses to form the SCLK signal.
+
+On pressing the STEP button, the data is latched into the MOSI output shift register and then transferred to the input shift register, 74xx495 U3.
+
+The rising edge of /CS is used to clock the received data into the latch section of U3.
 
 
 
