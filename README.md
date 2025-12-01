@@ -11,9 +11,9 @@ A typical SPI exchange consists of a synchronous transfer of serial data from th
 
 The bidirectional transfer is performed using a pair of shift registers, and parallel to serial conversion is often done at the same time. The output shift register on the master, can be a 74xx165 parallel in, serial out (PISO) register. The input register on the peripheral can be a 74xx595, a latching serial in, parallel out register. If a true full duplex, bidirectional exchange of data is required, then either an input and output register will be needed at both ends, or a single bidirectional register, like the tristate bus 74xx299 can be used.
 
-SPI is often used for sensors, GPIO expanders and serial memory devices. It is characterised by only requiring 4 signals:
+SPI is often used for sensors, GPIO expanders, ADCs, DACs and serial memory devices. It is characterised by only requiring 4 signals:
 
-/CE An active low chip enable signal, to select the peripheral device. Multiple peripherals will each need their own enable signal /CE0,  /CE1, /CE2 etc.
+/CS An active low chip enable signal, to select the peripheral device. Multiple peripherals will each need their own enable signal /CS0,  /CS1, /CS2 etc.
 
 MOSI -  the serial output from the controller to the input of the peripheral
 
@@ -21,9 +21,11 @@ MISO - the serial input from the peripheral to the controller
 
 SCLK - the synchronous serial clock to accompany the serial data.
 
-The transfer begins by the /CE signal being asserted low. This enables the peripheral, taking it out of low power mode, and puts it into data transfer mode. The output register is enabled for data transfer onto the MISO pin.
+As the controller device generates the SCLK and this clock is sent to the peripheral, they will remain in synchronisation and the actual frequency, or timing of the serial data is not important.
 
-Following on from the assertion of /CE, a series of gated clock pulses will be sent on SCLK and accompanying data on the MISO line.
+The transfer begins by the /CS signal being asserted low. This enables the peripheral, taking it out of low power mode, and puts it into data transfer mode. The output register is enabled for data transfer onto the MISO pin.
+
+Following on from the assertion of /CS, a series of gated clock pulses will be sent on SCLK and accompanying data on the MISO line.
 
 The idle state of the SCLK may be chosen to be high or low, this is known as CPOL (clock polarity). If CPOL=0 the idle state of the clock is low. If CPOL=1 the idle state of the clock is high.
 
@@ -32,6 +34,12 @@ CPHA (clock phase) refers to the clock edge on which data is clocked into the re
 These combinations of CPOL and CPHA give 4 possible operating modes, and sime peripherals support more than one mode.
 
 In this example Mode 0 will be used. CPOL = 0 (low idle state) and CPHA = 0 (clock data on rising edge).
+
+In addition to the shift registers, a simple sequencer, or state machine, based on a counter is used to generate the control signals /CS and SCLK.
+
+
+
+
 
 
 
